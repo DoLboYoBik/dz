@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Курорт · Рысевец Димка</title>
+  <style>
+    /* ===== БАЗОВЫЕ СТИЛИ ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background: #f0e6d2;
+      color: #2c1810;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      overflow-x: hidden;
+      position: relative;
+      cursor: default;
+    }
+
+    /* ===== СЛЕД ЗА КУРСОРОМ (ПЕСОЧНЫЙ) ===== */
+    .cursor-trail {
+      position: fixed;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 215, 140, 0.95) 0%, rgba(255, 200, 100, 0.5) 50%, rgba(255, 180, 80, 0.1) 80%, transparent 100%);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: screen;
+    }
+
+    /* ===== МАСКОТ (КРАБИК) ===== */
+    .mascot {
+      position: fixed;
+      right: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 150px;
+      z-index: 500;
+      pointer-events: none;
+      transition: transform 0.3s ease;
+      filter: drop-shadow(0 0 20px rgba(255, 200, 100, 0.8)) drop-shadow(0 0 40px rgba(255, 150, 50, 0.5));
+    }
+
+    .mascot svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    /* ===== ШАПКА ===== */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      background: rgba(255, 248, 230, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 3px solid #e8b86d;
+      box-shadow: 0 4px 20px rgba(200, 150, 80, 0.4);
+      flex-wrap: wrap;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.3rem;
+      color: #2c1810;
+      padding: 0.7rem 1.8rem;
+      border-radius: 50px;
+      background: linear-gradient(135deg, rgba(255, 248, 230, 0.95), rgba(232, 184, 109, 0.3));
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 3px solid #e8b86d;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(200, 150, 80, 0.3);
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+    }
+
+    .nav-links a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .nav-links a:hover::before {
+      left: 100%;
+    }
+
+    .nav-links a:hover {
+      background: linear-gradient(135deg, #e8b86d, #d4a04a);
+      border-color: #c89030;
+      box-shadow: 0 8px 30px rgba(200, 150, 80, 0.6);
+      transform: scale(1.12) translateY(-5px) rotate(-2deg);
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-links a:active {
+      transform: scale(0.95) translateY(0) rotate(0deg);
+    }
+
+    .nav-links a.active {
+      background: linear-gradient(135deg, #e8b86d, #d4a04a);
+      border-color: #c89030;
+      box-shadow: 0 8px 25px rgba(200, 150, 80, 0.5);
+      transform: scale(1.05);
+      color: #fff;
+    }
+
+    .tg-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff8e6;
+      border-radius: 50px;
+      padding: 0.6rem 1.4rem 0.6rem 1.6rem;
+      gap: 0.7rem;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #2c1810;
+      text-decoration: none;
+      border: 3px solid #e8b86d;
+      box-shadow: 0 4px 15px rgba(200, 150, 80, 0.3);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .tg-button:hover {
+      background: #e8b86d;
+      box-shadow: 0 8px 30px rgba(200, 150, 80, 0.6);
+      transform: scale(1.1) rotate(-3deg);
+      color: #fff;
+    }
+
+    .tg-button:active {
+      transform: scale(0.95) rotate(0deg);
+    }
+
+    .tg-button svg {
+      width: 26px;
+      height: 26px;
+      fill: #2c1810;
+      transition: transform 0.3s ease, fill 0.3s ease;
+    }
+
+    .tg-button:hover svg {
+      transform: rotate(20deg) scale(1.2);
+      fill: #fff;
+    }
+
+    /* ===== ОСНОВНАЯ ЧАСТЬ ===== */
+    main {
+      flex: 1;
+      max-width: 1300px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      width: 100%;
+    }
+
+    .page {
+      display: none;
+      flex-direction: column;
+      gap: 3rem;
+      width: 100%;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .page.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== СЦЕНА С ФОНОМ (ОБЩАЯ) ===== */
+    .scene {
+      position: relative;
+      border-radius: 40px;
+      overflow: hidden;
+      min-height: 420px;
+      box-shadow: 0 15px 50px rgba(100, 70, 30, 0.4);
+      border: 4px solid #e8b86d;
+    }
+
+    .scene-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .scene-content {
+      position: relative;
+      z-index: 10;
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 420px;
+      text-align: center;
+    }
+
+    /* ===== ШЕЗЛОНГ С КОКТЕЙЛЕМ ===== */
+    .lounger {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+    }
+
+    .lounger:hover {
+      transform: translateX(-50%) translateY(-25px) scale(1.1);
+      animation: bounce 0.6s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(-25px) scale(1.1); }
+      50% { transform: translateX(-50%) translateY(-40px) scale(1.15); }
+    }
+
+    .lounger svg {
+      width: 180px;
+      height: auto;
+      display: block;
+    }
+
+    /* ===== ЗАГОЛОВКИ И ТЕКСТ ===== */
+    .scene-content h1 {
+      font-size: 3.2rem;
+      margin-bottom: 1.2rem;
+      color: #fff;
+      text-shadow: 
+        0 2px 10px rgba(0, 0, 0, 0.4),
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        0 0 40px rgba(255, 200, 100, 0.5);
+      letter-spacing: 1px;
+      font-weight: 900;
+    }
+
+    .scene-content p {
+      font-size: 1.3rem;
+      max-width: 700px;
+      margin: 0 auto;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(255, 200, 100, 0.3);
+      line-height: 1.6;
+    }
+
+    /* ===== ФОРМА ===== */
+    .user-card-section {
+      display: flex;
+      justify-content: center;
+    }
+
+    .user-card {
+      padding: 2.5rem 3rem;
+      border-radius: 50px;
+      width: 100%;
+      max-width: 750px;
+      background: rgba(255, 248, 230, 0.95);
+      backdrop-filter: blur(10px);
+      border: 4px solid #e8b86d;
+      box-shadow: 0 15px 50px rgba(100, 70, 30, 0.35);
+    }
+
+    .user-card h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #2c1810;
+      text-shadow: 0 2px 8px rgba(232, 184, 109, 0.5);
+    }
+
+    .user-card .subtitle {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 600;
+      color: #5c3d2e;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      padding-left: 0.5rem;
+      color: #2c1810;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      border: 3px solid #e8b86d;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.95);
+      outline: none;
+      color: #2c1810;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(200, 150, 80, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: #d4a04a;
+      box-shadow: 0 8px 30px rgba(200, 150, 80, 0.4);
+      transform: scale(1.02);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1rem 2rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      border: 3px solid #c89030;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #e8b86d, #d4a04a);
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(200, 150, 80, 0.5);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #f0c878, #e8b86d);
+      box-shadow: 0 12px 40px rgba(200, 150, 80, 0.7);
+      transform: scale(1.05) translateY(-3px);
+    }
+
+    .submit-btn:active {
+      transform: scale(0.97) translateY(0);
+    }
+
+    /* ===== ШУТКА ===== */
+    .joke-section {
+      padding: 4rem 3rem;
+      border-radius: 60px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255, 248, 230, 0.95);
+      border: 4px solid #e8b86d;
+      box-shadow: 0 15px 50px rgba(100, 70, 30, 0.35);
+    }
+
+    .joke-section h1 {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      color: #2c1810;
+      text-shadow: 0 2px 8px rgba(232, 184, 109, 0.5);
+    }
+
+    .joke-section p {
+      font-size: 1.5rem;
+      font-weight: 600;
+      line-height: 1.8;
+      color: #5c3d2e;
+    }
+
+    /* ===== КАРУСЕЛЬ ===== */
+    .carousel-section {
+      width: 100%;
+    }
+
+    .carousel-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #fff;
+      text-shadow: 
+        0 2px 10px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(255, 200, 100, 0.5);
+    }
+
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 40px;
+      padding: 1rem;
+      background: rgba(255, 248, 230, 0.3);
+      backdrop-filter: blur(4px);
+      border: 3px solid rgba(232, 184, 109, 0.6);
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      gap: 2rem;
+      padding: 1rem 0;
+    }
+
+    .carousel-slide {
+      flex: 0 0 calc(33.333% - 1.34rem);
+      min-width: 280px;
+      border-radius: 32px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      background: rgba(255, 248, 230, 0.95);
+      border: 4px solid #e8b86d;
+      box-shadow: 0 8px 25px rgba(100, 70, 30, 0.3);
+    }
+
+    .carousel-slide:hover {
+      transform: translateY(-12px) scale(1.04) rotate(1deg);
+      box-shadow: 0 20px 50px rgba(100, 70, 30, 0.5);
+      border-color: #d4a04a;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      border-radius: 28px 28px 0 0;
+      border-bottom: 3px solid #e8b86d;
+      transition: filter 0.3s ease, transform 0.5s ease;
+    }
+
+    .carousel-slide:hover img {
+      filter: brightness(1.1) saturate(1.2);
+      transform: scale(1.05);
+    }
+
+    .slide-info {
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .slide-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #2c1810;
+      text-shadow: 0 1px 4px rgba(232, 184, 109, 0.5);
+    }
+
+    .slide-desc {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      color: #5c3d2e;
+    }
+
+    .slide-price {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: #d4a04a;
+      text-shadow: 0 2px 8px rgba(232, 184, 109, 0.5);
+      padding: 0.5rem 1rem;
+      border-top: 3px dashed #e8b86d;
+      margin-top: 0.5rem;
+    }
+
+    .carousel-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1.8rem;
+    }
+
+    .carousel-btn {
+      background: #fff8e6;
+      border: 3px solid #e8b86d;
+      font-size: 2rem;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #2c1810;
+      font-weight: bold;
+      box-shadow: 0 8px 25px rgba(200, 150, 80, 0.4);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      user-select: none;
+    }
+
+    .carousel-btn:hover {
+      background: #e8b86d;
+      box-shadow: 0 12px 40px rgba(200, 150, 80, 0.6);
+      transform: scale(1.25) rotate(10deg);
+      color: #fff;
+    }
+
+    .carousel-btn:active {
+      transform: scale(0.9) rotate(-10deg);
+    }
+
+    /* ===== КОНТАКТЫ ===== */
+    .contacts-section {
+      padding: 3rem;
+      border-radius: 60px;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255, 248, 230, 0.95);
+      border: 4px solid #e8b86d;
+      box-shadow: 0 15px 50px rgba(100, 70, 30, 0.35);
+    }
+
+    .contacts-section h1 {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      color: #2c1810;
+      text-shadow: 0 2px 8px rgba(232, 184, 109, 0.5);
+    }
+
+    .contacts-section p {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      color: #5c3d2e;
+    }
+
+    .contacts-section a {
+      color: #d4a04a;
+      text-decoration: none;
+      font-weight: 800;
+      transition: all 0.3s;
+    }
+
+    .contacts-section a:hover {
+      color: #c89030;
+      text-shadow: 0 0 15px rgba(232, 184, 109, 0.8);
+    }
+
+    /* ===== ПОДВАЛ ===== */
+    footer {
+      margin-top: 3rem;
+      padding: 1.8rem 2.5rem;
+      background: rgba(255, 248, 230, 0.92);
+      backdrop-filter: blur(12px);
+      border-top: 3px solid #e8b86d;
+      box-shadow: 0 -4px 20px rgba(200, 150, 80, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1.8rem;
+      align-items: center;
+    }
+
+    .social-links a {
+      text-decoration: none;
+      color: #2c1810;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 30px;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border: 2px solid transparent;
+    }
+
+    .social-links a:hover {
+      background: rgba(232, 184, 109, 0.3);
+      border-color: #e8b86d;
+      box-shadow: 0 4px 15px rgba(200, 150, 80, 0.3);
+      transform: scale(1.15) translateY(-3px);
+      color: #d4a04a;
+    }
+
+    .social-links a:active {
+      transform: scale(0.95) translateY(0);
+    }
+
+    .footer-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #2c1810;
+      text-shadow: 0 2px 8px rgba(232, 184, 109, 0.5);
+      text-align: center;
+      flex: 1;
+    }
+
+    /* ===== АДАПТИВ ===== */
+    @media (max-width: 1100px) {
+      .mascot { width: 120px; right: 15px; }
+      .nav-links a { font-size: 1.1rem; padding: 0.6rem 1.3rem; }
+    }
+
+    @media (max-width: 900px) {
+      header { padding: 1rem 1.5rem; justify-content: center; }
+      .nav-links { gap: 0.6rem; justify-content: center; }
+      .nav-links a { font-size: 0.95rem; padding: 0.5rem 1rem; }
+      .scene-content h1 { font-size: 2.2rem; }
+      .carousel-slide { flex: 0 0 calc(50% - 1rem); }
+      footer { flex-direction: column; text-align: center; }
+      .footer-name { order: -1; }
+      .mascot { width: 90px; right: 8px; top: 35%; transform: translateY(-35%); }
+      .lounger svg { width: 130px; }
+    }
+
+    @media (max-width: 600px) {
+      .carousel-slide { flex: 0 0 90%; min-width: 240px; }
+      .user-card { padding: 1.8rem; }
+      .joke-section, .contacts-section { padding: 1.8rem; }
+      .social-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+      .mascot { width: 70px; right: 5px; top: 30%; }
+      .nav-links a { font-size: 0.8rem; padding: 0.4rem 0.8rem; }
+      .scene-content h1 { font-size: 1.8rem; }
+      .scene-content p { font-size: 1rem; }
+      .lounger svg { width: 100px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Маскот (Крабик) -->
+  <div class="mascot" id="mascot">
+    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Тело краба -->
+      <ellipse cx="100" cy="120" rx="55" ry="40" fill="#e85d3a" stroke="#8b2e1a" stroke-width="3"/>
+      <!-- Панцирь сверху -->
+      <path d="M 50 110 Q 100 70 150 110" fill="#f0704a" stroke="#8b2e1a" stroke-width="3"/>
+      <!-- Глаза -->
+      <circle cx="75" cy="100" r="12" fill="#fff" stroke="#8b2e1a" stroke-width="2"/>
+      <circle cx="125" cy="100" r="12" fill="#fff" stroke="#8b2e1a" stroke-width="2"/>
+      <circle cx="75" cy="100" r="6" fill="#1a1a1a" id="leftEye"/>
+      <circle cx="125" cy="100" r="6" fill="#1a1a1a" id="rightEye"/>
+      <!-- Блики -->
+      <circle cx="73" cy="98" r="2" fill="#fff" opacity="0.8"/>
+      <circle cx="123" cy="98" r="2" fill="#fff" opacity="0.8"/>
+      <!-- Улыбка -->
+      <path d="M 80 135 Q 100 150 120 135" fill="none" stroke="#8b2e1a" stroke-width="3" stroke-linecap="round"/>
+      <!-- Клешни -->
+      <path d="M 50 125 Q 20 110 15 130 Q 10 150 30 145 Q 40 140 45 135" fill="#e85d3a" stroke="#8b2e1a" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M 150 125 Q 180 110 185 130 Q 190 150 170 145 Q 160 140 155 135" fill="#e85d3a" stroke="#8b2e1a" stroke-width="3" stroke-linejoin="round"/>
+      <!-- Ножки -->
+      <line x1="60" y1="150" x2="40" y2="175" stroke="#8b2e1a" stroke-width="4" stroke-linecap="round"/>
+      <line x1="80" y1="155" x2="65" y2="180" stroke="#8b2e1a" stroke-width="4" stroke-linecap="round"/>
+      <line x1="120" y1="155" x2="135" y2="180" stroke="#8b2e1a" stroke-width="4" stroke-linecap="round"/>
+      <line x1="140" y1="150" x2="160" y2="175" stroke="#8b2e1a" stroke-width="4" stroke-linecap="round"/>
+    </svg>
+  </div>
+
+  <!-- ШАПКА -->
+  <header>
+    <div class="nav-links">
+      <a href="#" data-page="home" class="nav-link active">Главная</a>
+      <a href="#" data-page="about" class="nav-link">Я</a>
+      <a href="#" data-page="works" class="nav-link">Мои работы</a>
+      <a href="#" data-page="contacts" class="nav-link">Контакты</a>
+    </div>
+    <a href="#" class="tg-button">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18.717-.962 4.022-1.363 5.694-.167.696-.402 1.389-.873 1.389-.486 0-.771-.333-1.194-.647-.496-.37-1.388-1.012-1.719-1.29-.267-.23-.845-.69-.845-1.214 0-.43.348-.656.687-.893.57-.414 1.464-1.066 1.985-1.451.42-.31 1.438-1.045 1.438-1.998 0-.522-.456-.815-.823-.815-.438 0-.965.33-1.334.635-.494.402-1.09.884-1.544 1.26-.33.27-.666.573-1.09.573-.44 0-.85-.393-1.12-.688-.297-.315-.63-.71-.63-1.16 0-.52.54-.9.966-1.188.62-.417 1.495-1.012 2.174-1.45.53-.34 1.216-.766 1.648-.766.366 0 .606.27.606.653 0 .3-.19.76-.298 1.008z"/>
+      </svg>
+      <span>Telegram</span>
+    </a>
+  </header>
+
+  <!-- ОСНОВНАЯ ЧАСТЬ -->
+  <main>
+    <!-- СТРАНИЦА: ГЛАВНАЯ (ДЕНЬ) -->
+    <div class="page active" id="page-home">
+      <div class="scene">
+        <img class="scene-bg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='600' viewBox='0 0 1400 600'%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2387CEEB'/%3E%3Cstop offset='60%25' style='stop-color:%23B0E0E6'/%3E%3Cstop offset='100%25' style='stop-color:%23F0E68C'/%3E%3C/linearGradient%3E%3ClinearGradient id='sea' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2340B0D0'/%3E%3Cstop offset='100%25' style='stop-color:%23206090'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1400' height='600' fill='url(%23sky)'/%3E%3Ccircle cx='1150' cy='120' r='70' fill='%23FFF8DC' opacity='0.95'/%3E%3Ccircle cx='1150' cy='120' r='90' fill='%23FFF8DC' opacity='0.3'/%3E%3Crect y='380' width='1400' height='220' fill='url(%23sea)'/%3E%3Cpath d='M0 380 Q200 370 400 380 T800 380 T1200 380 T1400 380 L1400 600 L0 600 Z' fill='%23F4D03F' opacity='0.8'/%3E%3Cpath d='M0 400 Q300 390 600 400 T1200 400 T1400 400 L1400 600 L0 600 Z' fill='%23E8C56A' opacity='0.6'/%3E%3C/svg%3E" alt="День у водоёма">
+        <div class="scene-content">
+          <h1>Добро пожаловать на курорт!</h1>
+          <p>Солнце, море, песок и отличное настроение. Это портфолио Рысевец Димки — здесь вы найдёте мои лучшие проекты и сможете связаться со мной.</p>
+        </div>
+        <!-- Шезлонг с коктейлем -->
+        <div class="lounger">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <!-- Шезлонг -->
+            <rect x="20" y="90" width="160" height="12" rx="6" fill="#d4a04a" stroke="#8b5e2a" stroke-width="2"/>
+            <rect x="25" y="80" width="150" height="10" rx="5" fill="#e8b86d" stroke="#8b5e2a" stroke-width="2"/>
+            <!-- Ножки -->
+            <rect x="30" y="102" width="8" height="30" rx="3" fill="#8b5e2a"/>
+            <rect x="162" y="102" width="8" height="30" rx="3" fill="#8b5e2a"/>
+            <rect x="80" y="102" width="6" height="25" rx="3" fill="#8b5e2a"/>
+            <rect x="120" y="102" width="6" height="25" rx="3" fill="#8b5e2a"/>
+            <!-- Полотенце -->
+            <rect x="40" y="82" width="120" height="8" rx="3" fill="#ff6b6b" opacity="0.9"/>
+            <rect x="40" y="82" width="120" height="4" rx="2" fill="#ffa07a" opacity="0.8"/>
+            <!-- Коктейль -->
+            <path d="M 100 40 L 85 75 L 115 75 Z" fill="#ffd700" opacity="0.9" stroke="#c89030" stroke-width="1.5"/>
+            <ellipse cx="100" cy="40" rx="15" ry="4" fill="#ff6b6b" opacity="0.8"/>
+            <!-- Трубочка -->
+            <line x1="105" y1="42" x2="115" y2="20" stroke="#ff4500" stroke-width="3" stroke-linecap="round"/>
+            <!-- Зонтик -->
+            <line x1="95" y1="40" x2="88" y2="15" stroke="#8b5e2a" stroke-width="2"/>
+            <path d="M 88 15 Q 75 10 80 20 Q 85 25 88 15 Z" fill="#00bfff"/>
+            <path d="M 88 15 Q 100 10 95 20 Q 90 25 88 15 Z" fill="#ff6b6b"/>
+            <!-- Ломтик -->
+            <circle cx="100" cy="45" r="5" fill="#ffa07a" stroke="#ff6b6b" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+
+      <section class="user-card-section">
+        <div class="user-card">
+          <h2>Записаться на консультацию</h2>
+          <p class="subtitle">Оставьте свои данные — я свяжусь с вами</p>
+          <form id="userForm">
+            <div class="form-group">
+              <label for="name">Имя</label>
+              <input type="text" id="name" placeholder="Как вас зовут?" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Почта</label>
+              <input type="email" id="email" placeholder="example@mail.com" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Телефон</label>
+              <input type="tel" id="phone" placeholder="+7 (999) 123-45-67" required>
+            </div>
+            <button type="submit" class="submit-btn">Отправить</button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <!-- СТРАНИЦА: Я (РАССВЕТ) -->
+    <div class="page" id="page-about">
+      <div class="scene">
+        <img class="scene-bg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='600' viewBox='0 0 1400 600'%3E%3Cdefs%3E%3ClinearGradient id='sky2' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23FFB6C1'/%3E%3Cstop offset='40%25' style='stop-color:%23FFDAB9'/%3E%3Cstop offset='70%25' style='stop-color:%23FFE4B5'/%3E%3Cstop offset='100%25' style='stop-color:%23FFF8DC'/%3E%3C/linearGradient%3E%3ClinearGradient id='sea2' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23FFB07C'/%3E%3Cstop offset='100%25' style='stop-color:%23D2691E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1400' height='600' fill='url(%23sky2)'/%3E%3Ccircle cx='700' cy='380' r='80' fill='%23FFD700' opacity='0.9'/%3E%3Ccircle cx='700' cy='380' r='120' fill='%23FFD700' opacity='0.2'/%3E%3Crect y='380' width='1400' height='220' fill='url(%23sea2)'/%3E%3Cpath d='M0 380 Q200 370 400 380 T800 380 T1200 380 T1400 380 L1400 600 L0 600 Z' fill='%23FFDAB9' opacity='0.6'/%3E%3C/svg%3E" alt="Рассвет">
+        <div class="scene-content">
+          <h1>Рассвет на курорте</h1>
+          <p>Про меня вы ничего не узнаете. Совсем. Ничего. Даже не пытайтесь. Я — загадка, покрытая утренним туманом, завернутая в тайну и посыпанная песком. 🌅</p>
+        </div>
+        <div class="lounger">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="90" width="160" height="12" rx="6" fill="#d4a04a" stroke="#8b5e2a" stroke-width="2"/>
+            <rect x="25" y="80" width="150" height="10" rx="5" fill="#e8b86d" stroke="#8b5e2a" stroke-width="2"/>
+            <rect x="30" y="102" width="8" height="30" rx="3" fill="#8b5e2a"/>
+            <rect x="162" y="102" width="8" height="30" rx="3" fill="#8b5e2a"/>
+            <rect x="80" y="102" width="6" height="25" rx="3" fill="#8b5e2a"/>
+            <rect x="120" y="102" width="6" height="25" rx="3" fill="#8b5e2a"/>
+            <rect x="40" y="82" width="120" height="8" rx="3" fill="#87CEEB" opacity="0.9"/>
+            <rect x="40" y="82" width="120" height="4" rx="2" fill="#B0E0E6" opacity="0.8"/>
+            <path d="M 100 40 L 85 75 L 115 75 Z" fill="#ffd700" opacity="0.9" stroke="#c89030" stroke-width="1.5"/>
+            <ellipse cx="100" cy="40" rx="15" ry="4" fill="#ffa07a" opacity="0.8"/>
+            <line x1="105" y1="42" x2="115" y2="20" stroke="#ff4500" stroke-width="3" stroke-linecap="round"/>
+            <line x1="95" y1="40" x2="88" y2="15" stroke="#8b5e2a" stroke-width="2"/>
+            <path d="M 88 15 Q 75 10 80 20 Q 85 25 88 15 Z" fill="#FFD700"/>
+            <path d="M 88 15 Q 100 10 95 20 Q 90 25 88 15 Z" fill="#FFA07A"/>
+            <circle cx="100" cy="45" r="5" fill="#ffa07a" stroke="#ff6b6b" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- СТРАНИЦА: МОИ РАБОТЫ (ЗАКАТ) -->
+    <div class="page" id="page-works">
+      <div class="scene">
+        <img class="scene-bg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='600' viewBox='0 0 1400 600'%3E%3Cdefs%3E%3ClinearGradient id='sky3' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23FF6B6B'/%3E%3Cstop offset='30%25' style='stop-color:%23FF8C42'/%3E%3Cstop offset='60%25' style='stop-color:%23FFD93D'/%3E%3Cstop offset='100%25' style='stop-color:%23FFB347'/%3E%3C/linearGradient%3E%3ClinearGradient id='sea3' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23FF8C42'/%3E%3Cstop offset='50%25' style='stop-color:%23C0392B'/%3E%3Cstop offset='100%25' style='stop-color:%236B1F1F'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1400' height='600' fill='url(%23sky3)'/%3E%3Ccircle cx='700' cy='380' r='90' fill='%23FF4500' opacity='0.9'/%3E%3Ccircle cx='700' cy='380' r='140' fill='%23FF4500' opacity='0.2'/%3E%3Crect y='380' width='1400' height='220' fill='url(%23sea3)'/%3E%3Cpath d='M0 380 Q200 370 400 380 T800 380 T1200 380 T1400 380 L1400 600 L0 600 Z' fill='%23FF8C42' opacity='0.7'/%3E%3C/svg%3E" alt="Закат">
+        <div class="scene-content">
+          <h1>Мои работы</h1>
+          <p>Проекты, которые я создал. Каждый — как закат на море: уникальный и неповторимый.</p>
+        </div>
+        <div class="lounger">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="90" width="160" height="12" rx="6" fill="#d4a04a" stroke="#8b5e2a" stroke-width="2"/>
+            <rect x="25" y="80" width="150" height="10" rx="5" fill="#e8b86d" stroke="#8b5e2a" stroke-width="2"/>
+            <rect x="30" y="102" width="8" height="30" rx="3" fill="#8b5e2a"/>
+            <rect x="162" y="102" width="8" height="30" rx="3" fill="#8b5e2a"/>
+            <rect x="80" y="102" width="6" height="25" rx="3" fill="#8b5e2a"/>
+            <rect x="120" y="102" width="6" height="25" rx="3" fill="#8b5e2a"/>
+            <rect x="40" y="82" width="120" height="8" rx="3" fill="#FF6B6B" opacity="0.9"/>
+            <rect x="40" y="82" width="120" height="4" rx="2" fill="#FF8C42" opacity="0.8"/>
+            <path d="M 100 40 L 85 75 L 115 75 Z" fill="#FFD700" opacity="0.9" stroke="#c89030" stroke-width="1.5"/>
+            <ellipse cx="100" cy="40" rx="15" ry="4" fill="#FF4500" opacity="0.8"/>
+            <line x1="105" y1="42" x2="115" y2="20" stroke="#FF4500" stroke-width="3" stroke-linecap="round"/>
+            <line x1="95" y1="40" x2="88" y2="15" stroke="#8b5e2a" stroke-width="2"/>
+            <path d="M 88 15 Q 75 10 80 20 Q 85 25 88 15 Z" fill="#FF6B6B"/>
+            <path d="M 88 15 Q 100 10 95 20 Q 90 25 88 15 Z" fill="#FFD700"/>
+            <circle cx="100" cy="45" r="5" fill="#FFA07A" stroke="#FF4500" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+
+      <section class="carousel-section">
+        <div class="carousel-container">
+          <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-slide">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23FF8C42'/%3E%3Ccircle cx='300' cy='80' r='50' fill='%23FFD700'/%3E%3Crect y='180' width='400' height='120' fill='%23C0392B'/%3E%3Ctext x='50' y='150' font-family='Arial' font-size='28' fill='white' font-weight='bold'%3EСайт кафе%3C/text%3E%3C/svg%3E" alt="Работа 1">
+              <div class="slide-info">
+                <div class="slide-title">Корпоративный сайт</div>
+                <div class="slide-desc">Адаптивный лендинг с анимацией</div>
+                <div class="slide-price">15 000 ₽</div>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23FF6B6B'/%3E%3Ccircle cx='200' cy='100' r='60' fill='%23FFD93D'/%3E%3Crect y='180' width='400' height='120' fill='%238B4513'/%3E%3Ctext x='50' y='150' font-family='Arial' font-size='28' fill='white' font-weight='bold'%3EПриложение%3C/text%3E%3C/svg%3E" alt="Работа 2">
+              <div class="slide-info">
+                <div class="slide-title">Мобильное приложение</div>
+                <div class="slide-desc">UI/UX дизайн для iOS и Android</div>
+                <div class="slide-price">25 000 ₽</div>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23FFB347'/%3E%3Ccircle cx='100' cy='80' r='40' fill='%23FF4500'/%3E%3Crect y='180' width='400' height='120' fill='%23A0522D'/%3E%3Ctext x='50' y='150' font-family='Arial' font-size='28' fill='white' font-weight='bold'%3EБрендинг%3C/text%3E%3C/svg%3E" alt="Работа 3">
+              <div class="slide-info">
+                <div class="slide-title">Брендинг и айдентика</div>
+                <div class="slide-desc">Разработка логотипа и фирменного стиля</div>
+                <div class="slide-price">20 000 ₽</div>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23FFD93D'/%3E%3Ccircle cx='300' cy='100' r='55' fill='%23FF6B6B'/%3E%3Crect y='180' width='400' height='120' fill='%23CD853F'/%3E%3Ctext x='50' y='150' font-family='Arial' font-size='28' fill='%23333' font-weight='bold'%3EМагазин%3C/text%3E%3C/svg%3E" alt="Работа 4">
+              <div class="slide-info">
+                <div class="slide-title">Интернет-магазин</div>
+                <div class="slide-desc">E-commerce платформа с корзиной</div>
+                <div class="slide-price">35 000 ₽</div>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23FF8C42'/%3E%3Ccircle cx='200' cy='90' r='65' fill='%23FFD700'/%3E%3Crect y='180' width='400' height='120' fill='%238B4513'/%3E%3Ctext x='50' y='150' font-family='Arial' font-size='28' fill='white' font-weight='bold'%3EПортфолио%3C/text%3E%3C/svg%3E" alt="Работа 5">
+              <div class="slide-info">
+                <div class="slide-title">Сайт-портфолио</div>
+                <div class="slide-desc">Персональный сайт для фотографа</div>
+                <div class="slide-price">12 000 ₽</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-buttons">
+          <div class="carousel-btn" id="prevBtn">‹</div>
+          <div class="carousel-btn" id="nextBtn">›</div>
+        </div>
+      </section>
+    </div>
+
+    <!-- СТРАНИЦА: КОНТАКТЫ (НОЧЬ) -->
+    <div class="page" id="page-contacts">
+      <div class="scene">
+        <img class="scene-bg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='600' viewBox='0 0 1400 600'%3E%3Cdefs%3E%3ClinearGradient id='sky4' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%230B1026'/%3E%3Cstop offset='50%25' style='stop-color:%231B2A4A'/%3E%3Cstop offset='100%25' style='stop-color:%232C3E6B'/%3E%3C/linearGradient%3E%3ClinearGradient id='sea4' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%231B2A4A'/%3E%3Cstop offset='100%25' style='stop-color:%230B1026'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1400' height='600' fill='url(%23sky4)'/%3E%3Ccircle cx='1100' cy='100' r='50' fill='%23FFFACD' opacity='0.95'/%3E%3Ccircle cx='1100' cy='100' r='70' fill='%23FFFACD' opacity='0.2'/%3E%3Ccircle cx='200' cy='80' r='2' fill='white' opacity='0.8'/%3E%3Ccircle cx='350' cy='150' r='1.5' fill='white' opacity='0.7'/%3E%3Ccircle cx='500' cy='60' r='2' fill='white' opacity='0.9'/%3E%3Ccircle cx='750' cy='130' r='1.5' fill='white' opacity='0.6'/%3E%3Ccircle cx='900' cy='70' r='2' fill='white' opacity='0.8'/%3E%3Ccircle cx='1300' cy='160' r='1.5' fill='white' opacity='0.7'/%3E%3Crect y='380' width='1400' height='220' fill='url(%23sea4)'/%3E%3Cpath d='M0 380 Q200 370 400 380 T800 380 T1200 380 T1400 380 L1400 600 L0 600 Z' fill='%232C3E6B' opacity='0.8'/%3E%3C/svg%3E" alt="Ночь">
+        <div class="scene-content">
+          <h1>Контакты</h1>
+          <p>Свяжитесь со мной в любое время — даже ночью, когда на море светит луна.</p>
+        </div>
+        <div class="lounger">
+          <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+            <rect x="20" y="90" width="160" height="12" rx="6" fill="#d4a04a" stroke="#8b5e2a" stroke-width="2"/>
+            <rect x="25" y="80" width="150" height="10" rx="5" fill="#e8b86d" stroke="#8b5e2a" stroke-width="2"/>
+            <rect x="30" y="102" width="8" height="30" rx="3" fill="#8b5e2a"/>
+            <rect x="162" y="102" width="8" height="30" rx="3" fill="#8b5e2a"/>
+            <rect x="80" y="102" width="6" height="25" rx="3" fill="#8b5e2a"/>
+            <rect x="120" y="102" width="6" height="25" rx="3" fill="#8b5e2a"/>
+            <rect x="40" y="82" width="120" height="8" rx="3" fill="#4A6FA5" opacity="0.9"/>
+            <rect x="40" y="82" width="120" height="4" rx="2" fill="#6B8FC5" opacity="0.8"/>
+            <path d="M 100 40 L 85 75 L 115 75 Z" fill="#C0C0C0" opacity="0.9" stroke="#808080" stroke-width="1.5"/>
+            <ellipse cx="100" cy="40" rx="15" ry="4" fill="#6B8FC5" opacity="0.8"/>
+            <line x1="105" y1="42" x2="115" y2="20" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+            <line x1="95" y1="40" x2="88" y2="15" stroke="#8b5e2a" stroke-width="2"/>
+            <path d="M 88 15 Q 75 10 80 20 Q 85 25 88 15 Z" fill="#C0C0C0"/>
+            <path d="M 88 15 Q 100 10 95 20 Q 90 25 88 15 Z" fill="#FFD700"/>
+            <circle cx="100" cy="45" r="5" fill="#C0C0C0" stroke="#808080" stroke-width="1"/>
+          </svg>
+        </div>
+      </div>
+
+      <section class="contacts-section">
+        <h1>Контакты</h1>
+        <p>📧 Email: <a href="mailto:hello@rysevets.com">hello@rysevets.com</a></p>
+        <p>📱 Телефон: <a href="tel:+79991234567">+7 (999) 123-45-67</a></p>
+        <p>💬 Telegram: <a href="#">@rysevets</a></p>
+        <p style="margin-top: 2rem; font-size: 1.2rem;">Пишите — я всегда на связи! 🌙</p>
+      </section>
+    </div>
+  </main>
+
+  <!-- ПОДВАЛ -->
+  <footer>
+    <div class="social-links">
+      <a href="#">TikTok</a>
+      <a href="#">Telegram</a>
+      <a href="#">YouTube</a>
+    </div>
+    <div class="footer-name">Рысевец Димка</div>
+    <div style="width: 1px; flex: 0.1;"></div>
+  </footer>
+
+  <script>
+    // ===== СЛЕД ЗА КУРСОРОМ (ПЕСОЧНЫЙ) =====
+    const MAX_TRAILS = 45;
+    const trailElements = [];
+
+    for (let i = 0; i < MAX_TRAILS; i++) {
+      const el = document.createElement('div');
+      el.className = 'cursor-trail';
+      const size = Math.max(6, 34 - i * 0.7);
+      el.style.width = size + 'px';
+      el.style.height = size + 'px';
+      const baseOpacity = Math.max(0.05, 0.95 - i * 0.022);
+      el.style.opacity = baseOpacity;
+      const fadeDuration = 4 + i * 0.3;
+      el.style.transition = `opacity ${fadeDuration}s ease-out`;
+      const glowSize = Math.max(3, 15 - i * 0.3);
+      el.style.filter = `drop-shadow(0 0 ${glowSize}px #FFD700) drop-shadow(0 0 ${glowSize * 2}px #FFA500)`;
+      document.body.appendChild(el);
+      trailElements.push({
+        el: el,
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+        speed: Math.max(0.04, 0.35 - i * 0.007)
+      });
+    }
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function animateTrail() {
+      trailElements.forEach((item) => {
+        item.x += (mouseX - item.x) * item.speed;
+        item.y += (mouseY - item.y) * item.speed;
+        item.el.style.left = item.x + 'px';
+        item.el.style.top = item.y + 'px';
+      });
+      requestAnimationFrame(animateTrail);
+    }
+    animateTrail();
+
+    // ===== МАСКОТ (КРАБИК) СЛЕДИТ ЗА КУРСОРОМ =====
+    const mascot = document.getElementById('mascot');
+    const leftEye = document.getElementById('leftEye');
+    const rightEye = document.getElementById('rightEye');
+    const leftEyeCenter = { x: 75, y: 100 };
+    const rightEyeCenter = { x: 125, y: 100 };
+
+    function updateMascot() {
+      const rect = mascot.getBoundingClientRect();
+      const mascotCenterX = rect.left + rect.width / 2;
+      const mascotCenterY = rect.top + rect.height / 2;
+      const dx = mouseX - mascotCenterX;
+      const dy = mouseY - mascotCenterY;
+      const maxOffset = 5;
+      const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+      const offsetX = (dx / distance) * Math.min(maxOffset, distance * 0.04);
+      const offsetY = (dy / distance) * Math.min(maxOffset, distance * 0.04);
+      const svgScale = 200 / rect.width;
+      const eyeOffsetX = offsetX * svgScale * 0.7;
+      const eyeOffsetY = offsetY * svgScale * 0.7;
+      leftEye.setAttribute('cx', leftEyeCenter.x + eyeOffsetX);
+      leftEye.setAttribute('cy', leftEyeCenter.y + eyeOffsetY);
+      rightEye.setAttribute('cx', rightEyeCenter.x + eyeOffsetX);
+      rightEye.setAttribute('cy', rightEyeCenter.y + eyeOffsetY);
+      const tiltX = Math.max(-8, Math.min(8, dx / 40));
+      const tiltY = Math.max(-5, Math.min(5, dy / 60));
+      mascot.style.transform = `translateY(-50%) rotate(${tiltX}deg) translateX(${tiltY}px)`;
+      requestAnimationFrame(updateMascot);
+    }
+    updateMascot();
+
+    // ===== НАВИГАЦИЯ (SPA) =====
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pages = document.querySelectorAll('.page');
+
+    function showPage(pageId) {
+      pages.forEach(page => page.classList.remove('active'));
+      navLinks.forEach(link => link.classList.remove('active'));
+
+      const targetPage = document.getElementById('page-' + pageId);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+
+      navLinks.forEach(link => {
+        if (link.dataset.page === pageId) {
+          link.classList.add('active');
+        }
+      });
+
+      if (pageId === 'works') {
+        setTimeout(updateCarousel, 50);
+      }
+    }
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pageId = link.dataset.page;
+        showPage(pageId);
+      });
+    });
+
+    // ===== ФОРМА =====
+    const form = document.getElementById('userForm');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Спасибо! Ваши данные отправлены (демо). Я свяжусь с вами в ближайшее время.');
+        form.reset();
+      });
+    }
+
+    // ===== КАРУСЕЛЬ =====
+    const track = document.getElementById('carouselTrack');
+    const slides = Array.from(track.children);
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let currentIndex = 0;
+
+    function getSlidesPerView() {
+      if (window.innerWidth <= 600) return 1;
+      if (window.innerWidth <= 900) return 2;
+      return 3;
+    }
+
+    function updateCarousel() {
+      if (!slides.length) return;
+      const perView = getSlidesPerView();
+      const slideWidth = slides[0].getBoundingClientRect().width;
+      const gap = parseFloat(getComputedStyle(track).gap) || 32;
+      const moveAmount = slideWidth + gap;
+      const maxIndex = Math.max(0, slides.length - perView);
+      if (currentIndex > maxIndex) currentIndex = maxIndex;
+      if (currentIndex < 0) currentIndex = 0;
+      track.style.transform = `translateX(-${currentIndex * moveAmount}px)`;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      currentIndex--;
+      updateCarousel();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      const perView = getSlidesPerView();
+      const maxIndex = Math.max(0, slides.length - perView);
+      currentIndex++;
+      if (currentIndex > maxIndex) currentIndex = 0;
+      updateCarousel();
+    });
+
+    window.addEventListener('resize', () => {
+      updateCarousel();
+    });
+
+    updateCarousel();
+  </script>
+</body>
+</html>
